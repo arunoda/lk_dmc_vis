@@ -275,7 +275,7 @@
       "time_str": "2025-11-28 06:00:00",
       "time_ut": 1764289800,
       "previous_water_level": -2.0,
-      "current_water_level": 0.0,
+      "current_water_level": null,
       "remarks": "Normal",
       "rising_or_falling": "",
       "rainfall_mm": 7.2

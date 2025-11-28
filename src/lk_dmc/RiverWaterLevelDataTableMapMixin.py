@@ -20,18 +20,29 @@ class RiverWaterLevelDataTableMapMixin:
                 linewidth=0.5,
             )
 
+    def __draw_station__(self, ax, rwld):
+        station = rwld.gauging_station
+        lat, lng = station.lat_lng
+        color = "green"
+        if rwld.current_water_level >= station.major_flood_level:
+            color = "red"
+        elif rwld.current_water_level >= station.minor_flood_level:
+            color = "orange"
+        elif rwld.current_water_level >= station.alert_level:
+            color = "yellow"
+
+        ax.plot(
+            lng,
+            lat,
+            marker="o",
+            markersize=5,
+            color=color,
+            alpha=0.7,
+        )
+
     def __draw_stations__(self, ax):
         for rwld in self.d_list:
-            station = rwld.gauging_station
-            lat, lng = station.lat_lng
-            ax.plot(
-                lng,
-                lat,
-                marker="o",
-                markersize=5,
-                color="blue",
-                alpha=0.7,
-            )
+            self.__draw_station__(ax, rwld)
 
     def draw(self):
         fig, ax = plt.subplots(figsize=(9, 16))

@@ -76,5 +76,23 @@ class RiverWaterLevelDataTableRemoteDataMixin:
     @classmethod
     def latest(cls):
         rwld_table_list = cls.list_latest()
-        assert rwld_table_list, "No RiverWaterLevelDataTable found"
-        return rwld_table_list[0]
+        idx = {}
+        for rwld_table in rwld_table_list:
+            for rwld in rwld_table.d_list:
+                if rwld.current_water_level is None:
+                    continue
+                station_name = rwld.gauging_station_name
+                if station_name not in idx:
+                    idx[station_name] = []
+                idx[station_name].append(rwld)
+
+        for station_name, rwld_list in idx.items():
+            rwld_list.sort(key=lambda x: x.time_ut, reverse=True)
+            idx[station_name] = rwld_list[0]
+            print(station_name)
+            print(idx[station_name])
+            print("-" * 32)
+
+        latest_rwld_table = cls(d_list=list(idx.values()))
+
+        return latest_rwld_table
