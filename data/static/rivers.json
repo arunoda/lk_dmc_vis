@@ -1,0 +1,45 @@
+[
+  {"name": "Kelani Ganga", "river_basin_name": "Kelani Ganga"},
+  {"name": "Gurugoda Oya", "river_basin_name": "Kelani Ganga"},
+  {"name": "Seethawaka Ganga", "river_basin_name": "Kelani Ganga"},
+  {"name": "Kehelgamu Oya", "river_basin_name": "Kelani Ganga"},
+
+  {"name": "Kalu Ganga", "river_basin_name": "Kalu Ganga"},
+  {"name": "Maguru Ganga", "river_basin_name": "Kalu Ganga"},
+  {"name": "Kuda Ganga", "river_basin_name": "Kalu Ganga"},
+
+  {"name": "Gin Ganga", "river_basin_name": "Gin Ganga"},
+
+  {"name": "Nilwala Ganga", "river_basin_name": "Nilwala Ganga"},
+  {"name": "Urubokka Ganga", "river_basin_name": "Nilwala Ganga"},
+
+  {"name": "Walawe Ganga", "river_basin_name": "Walawe Ganga"},
+
+  {"name": "Kirindi Oya", "river_basin_name": "Kirindi Oya"},
+  {"name": "Kuda Oya", "river_basin_name": "Kirindi Oya"},
+
+  {"name": "Menik Ganga", "river_basin_name": "Menik Ganga"},
+
+  {"name": "Kumbukkan Oya", "river_basin_name": "Kumbukkan Oya"},
+
+  {"name": "Heda Oya", "river_basin_name": "Heda Oya"},
+
+  {"name": "Maduru Oya", "river_basin_name": "Maduru Oya"},
+
+  {"name": "Mahaweli Ganga", "river_basin_name": "Mahaweli Ganga"},
+  {"name": "Badulu Oya", "river_basin_name": "Mahaweli Ganga"},
+
+  {"name": "Yan Oya", "river_basin_name": "Yan Oya"},
+
+  {"name": "Mukunu Oya", "river_basin_name": "Maa Oya"},
+
+  {"name": "Malwathu Oya", "river_basin_name": "Malwathu Oya"},
+
+  {"name": "Mee Oya", "river_basin_name": "Mee Oya"},
+
+  {"name": "Deduru Oya", "river_basin_name": "Deduru Oya"},
+
+  {"name": "Maha Oya", "river_basin_name": "Maha Oya"},
+
+  {"name": "Attanagalu Oya", "river_basin_name": "Attanagalu Oya"}
+]
