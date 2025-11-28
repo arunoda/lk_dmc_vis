@@ -47,8 +47,7 @@ class RiverWaterLevelDataTableMapMixin:
 
         for river in rivers:
             locations = [
-                GaugingStation.from_name_safe(name)
-                or Location.from_name(name)
+                GaugingStation.from_name_safe(name) or Location.from_name(name)
                 for name in river.location_names
             ]
             n_locations = len(locations)
@@ -216,6 +215,6 @@ class RiverWaterLevelDataTableMapMixin:
             spine.set_visible(False)
 
         image_path = os.path.join("images", "map.png")
-        fig.set_size_inches(16, 16, forward=True)
+        fig.set_size_inches(12, 12, forward=True)
         fig.savefig(image_path, dpi=300)
         log.info(f"Wrote {image_path}")
