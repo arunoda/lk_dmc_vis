@@ -1,9 +1,9 @@
-# Sri Lanka 🇱🇰 - Flood Map
+# #SriLanka 🇱🇰 - Flood Map
 
-This is a schematic diagram of river water levels across gauging statons in Sri Lanka. 
+This is a schematic diagram of river water levels across gauging stations in Sri Lanka.
 
 Data from [@dmc_lk](https://www.dmc.gov.lk/index.php).
 
-Updated as and when the DMC has updates (usually every 3 hours)
+Updated whenever new information is released by the DMC, usually every 3 hours.
 
 ![images/map.png](images/map.png)
