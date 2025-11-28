@@ -12,6 +12,13 @@ log = Log("RiverWaterLevelDataTableMapMixin")
 
 
 class RiverWaterLevelDataTableMapMixin:
+    LEVEL_TO_COLOR = {
+        0: "grey",
+        1: "green",
+        2: "yellow",
+        3: "orange",
+        4: "red",
+    }
 
     def __draw_map__(self, ax):
         district_ents = Ent.list_from_type(EntType.DISTRICT)
@@ -24,8 +31,17 @@ class RiverWaterLevelDataTableMapMixin:
                 linewidth=0.5,
             )
 
+    def get_station_to_level_map(self):
+        station_to_level = {}
+        for rwld in self.d_list:
+            station = rwld.gauging_station
+            level = self.__get_station_level__(rwld)
+            station_to_level[station.name] = level
+        return station_to_level
+
     def __draw_rivers__(self, ax):
         rivers = River.list_all()
+
         for river in rivers:
             locations = [
                 GaugingStation.from_name_safe(name)
@@ -33,9 +49,16 @@ class RiverWaterLevelDataTableMapMixin:
                 for name in river.location_names
             ]
             n_locations = len(locations)
+            station_to_level = self.get_station_to_level_map()
             for i in range(n_locations - 1):
                 loc1 = locations[i]
                 loc2 = locations[i + 1]
+
+                level1 = station_to_level.get(loc1.name, 0)
+                level2 = station_to_level.get(loc2.name, 0)
+                level_max = max(level1, level2)
+                color = self.LEVEL_TO_COLOR[level_max]
+
                 y1, x1 = loc1.lat_lng
                 y2, x2 = loc2.lat_lng
 
@@ -49,7 +72,7 @@ class RiverWaterLevelDataTableMapMixin:
                 ax.plot(
                     [x1, xmid, x2],
                     [y1, ymid, y2],
-                    color=(0.6, 0.6, 0.9),
+                    color=color,
                     linewidth=2,
                     alpha=0.7,
                 )
@@ -65,20 +88,33 @@ class RiverWaterLevelDataTableMapMixin:
                 markersize=5,
                 color="grey",
             )
+            ax.text(
+                lng + 0.03,
+                lat,
+                location.name,
+                fontsize=4,
+                color="grey",
+            )
+
+    def __get_station_level__(self, rwld):
+        station = rwld.gauging_station
+
+        if rwld.current_water_level >= station.major_flood_level:
+            return 4
+
+        elif rwld.current_water_level >= station.minor_flood_level:
+            return 3
+
+        elif rwld.current_water_level >= station.alert_level:
+            return 2
+
+        return 1
 
     def __draw_station__(self, ax, rwld):
         station = rwld.gauging_station
         lat, lng = station.lat_lng
-        color = "green"
-
-        if rwld.current_water_level >= station.major_flood_level:
-            color = "red"
-
-        elif rwld.current_water_level >= station.minor_flood_level:
-            color = "orange"
-
-        elif rwld.current_water_level >= station.alert_level:
-            color = "yellow"
+        level = self.__get_station_level__(rwld)
+        color = self.LEVEL_TO_COLOR[level]
 
         ax.plot(
             lng,
