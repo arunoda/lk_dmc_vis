@@ -44,8 +44,7 @@ class RiverWaterLevelDataTableMapMixin:
 
         for river in rivers:
             locations = [
-                GaugingStation.from_name_safe(name)
-                or Location.from_name(name)
+                GaugingStation.from_name_safe(name) or Location.from_name(name)
                 for name in river.location_names
             ]
             n_locations = len(locations)
@@ -142,6 +141,8 @@ class RiverWaterLevelDataTableMapMixin:
         self.__draw_rivers__(ax)
         self.__draw_locations__(ax)
         self.__draw_stations__(ax)
+
+        plt.title("Sri Lanka - Flood Map")
         ax.set_axis_off()
         for spine in ax.spines.values():
             spine.set_visible(False)
