@@ -22,6 +22,10 @@ class RiverWaterLevelData:
     rising_or_falling: str
     rainfall_mm: float
 
+    @property
+    def gauging_station(self) -> GaugingStation:
+        return GaugingStation.from_name(self.gauging_station_name)
+
     @classmethod
     def from_df_row(
         cls, row, current_river_basin: RiverBasin
@@ -60,3 +64,7 @@ class RiverWaterLevelData:
         )
 
         return rwld, river_basin
+
+    @classmethod
+    def from_dict(cls, d):
+        return cls(**d)
