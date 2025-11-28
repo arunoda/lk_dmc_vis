@@ -165,8 +165,7 @@ class RiverWaterLevelDataTableMapMixin:
         ax.legend(handles=legend_handles, loc="upper right", fontsize=8)
 
     def draw(self):
-        fig, ax = plt.subplots()
-        fig.set_size_inches(16, 16)
+        fig, ax = plt.subplots(figsize=(16, 16))
 
         base = Path(__file__).resolve().parents[2]
         font_path = base / "fonts" / "Ubuntu-Regular.ttf"
@@ -203,7 +202,6 @@ class RiverWaterLevelDataTableMapMixin:
             fontsize=12,
             color="black",
         )
-
         fig.text(
             0.5,
             0.8,
