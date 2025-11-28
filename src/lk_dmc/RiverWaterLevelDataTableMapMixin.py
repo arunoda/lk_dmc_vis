@@ -47,8 +47,7 @@ class RiverWaterLevelDataTableMapMixin:
 
         for river in rivers:
             locations = [
-                GaugingStation.from_name_safe(name)
-                or Location.from_name(name)
+                GaugingStation.from_name_safe(name) or Location.from_name(name)
                 for name in river.location_names
             ]
             n_locations = len(locations)
@@ -165,7 +164,8 @@ class RiverWaterLevelDataTableMapMixin:
         ax.legend(handles=legend_handles, loc="upper right", fontsize=8)
 
     def draw(self):
-        fig, ax = plt.subplots(figsize=(16, 16))
+        fig, ax = plt.subplots()
+        fig.set_size_inches(16, 16)
 
         base = Path(__file__).resolve().parents[2]
         font_path = base / "fonts" / "Ubuntu-Regular.ttf"
