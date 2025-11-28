@@ -2,6 +2,9 @@ import os
 
 import matplotlib.pyplot as plt
 from gig import Ent, EntType
+from matplotlib.lines import Line2D
+
+# Patch is no longer used; legend uses Line2D markers
 from utils import Log
 
 from lk_dmc.GaugingStation import GaugingStation
@@ -83,7 +86,7 @@ class RiverWaterLevelDataTableMapMixin:
             ax.plot(
                 lng,
                 lat,
-                marker="o",
+                marker="s",
                 markersize=5,
                 color="grey",
             )
@@ -134,6 +137,35 @@ class RiverWaterLevelDataTableMapMixin:
         for rwld in self.d_list:
             self.__draw_station__(ax, rwld)
 
+    def __draw_legend__(self, ax):
+        legend_handles = []
+        for color, label in [
+            ("red", "Major Flood"),
+            ("orange", "Minor Flood"),
+            ("yellow", "Alert"),
+            ("green", "Normal"),
+            ("grey", "Circle = Gauging Station"),
+            ("grey", "Square = Other Location"),
+        ]:
+            if "Square" in label:
+                markersize = 5
+                marker_style = "s"
+            else:
+                markersize = 10
+                marker_style = "o"
+            handle = Line2D(
+                [0],
+                [0],
+                marker=marker_style,
+                color="w",
+                markerfacecolor=color,
+                markersize=markersize,
+                label=label,
+            )
+            legend_handles.append(handle)
+
+        ax.legend(handles=legend_handles, loc="upper right", fontsize=8)
+
     def draw(self):
         fig, ax = plt.subplots(figsize=(9, 16))
 
@@ -142,6 +174,7 @@ class RiverWaterLevelDataTableMapMixin:
         self.__draw_locations__(ax)
         self.__draw_stations__(ax)
 
+        self.__draw_legend__(ax)
         plt.title("Sri Lanka - Flood Map")
         ax.set_axis_off()
         for spine in ax.spines.values():
