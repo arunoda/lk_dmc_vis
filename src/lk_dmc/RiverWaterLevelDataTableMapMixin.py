@@ -216,5 +216,6 @@ class RiverWaterLevelDataTableMapMixin:
             spine.set_visible(False)
 
         image_path = os.path.join("images", "map.png")
+        fig.set_size_inches(16, 16, forward=True)
         fig.savefig(image_path, dpi=300)
         log.info(f"Wrote {image_path}")
