@@ -37,17 +37,24 @@ class AbstractTable:
 
     @classmethod
     def list_all(cls):
-        # cls.prettify() - HACK
+        cls.prettify()
         d_list = cls.__get_d_list__()
         return [cls.from_dict(d) for d in d_list]
 
     @classmethod
-    def from_name(cls, name):
+    def from_name_safe(cls, name):
         o_list = cls.list_all()
         for o in o_list:
             if o.name == name:
                 return o
-        raise ValueError(f"'{name}' not found")
+        return None
+
+    @classmethod
+    def from_name(cls, name):
+        o = cls.from_name_safe(name)
+        if not o:
+            raise ValueError(f"{cls.__name__} with name '{name}' not found")
+        return o
 
     def __eq__(self, other):
         if not isinstance(other, AbstractTable):
