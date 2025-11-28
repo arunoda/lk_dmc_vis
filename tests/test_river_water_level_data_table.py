@@ -8,21 +8,22 @@ from lk_dmc import RiverWaterLevelDataTable
 class TestCase(unittest.TestCase):
     def test_list_from_pdf(self):
         pdf_path = os.path.join(
-            "tests", "inputs", "test_river_water_level_data_table.pdf"
+            "tests", "inputs", "2025-11-28-15-30-water-level.pdf"
         )
         t = RiverWaterLevelDataTable.from_pdf(pdf_path)
         self.assertEqual(len(t), 39)
 
         rwld = t.d_list[0]
         actual_d = asdict(rwld)
+        print(actual_d)
         self.assertEqual(
             actual_d,
             {
                 "gauging_station_name": "Nagalagam Street",
-                "time_str": "2025-11-28 06:00:00",
-                "time_ut": 1764289800,
-                "previous_water_level": 1.61544,
-                "current_water_level": 1.6459200000000003,
+                "time_str": "2025-11-28 15:30:00",
+                "time_ut": 1764324000.0,
+                "previous_water_level": 1.7373600000000002,
+                "current_water_level": 1.76784,
                 "remarks": "Minor Flood",
                 "rising_or_falling": "Rising",
                 "rainfall_mm": 0.0,

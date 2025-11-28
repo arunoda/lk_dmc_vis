@@ -139,9 +139,9 @@ class RiverWaterLevelDataTableMapMixin:
     def __draw_legend__(self, ax):
         legend_handles = []
         for color, label in [
-            ("red", "Major Flood"),
-            ("orange", "Minor Flood"),
-            ("yellow", "Alert"),
+            ("red", "Major Floods"),
+            ("orange", "Minor Floods"),
+            ("yellow", "On Alert"),
             ("green", "Normal"),
             ("grey", "Circle = Gauging Station"),
             ("grey", "Square = Other Location"),

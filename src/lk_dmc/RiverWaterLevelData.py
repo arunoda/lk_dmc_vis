@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from datetime import datetime
 
-from utils import Log
+from utils import Log, Time, TimeFormat
 
 from lk_dmc.GaugingStation import GaugingStation
 from lk_dmc.River import River
@@ -28,7 +27,7 @@ class RiverWaterLevelData:
 
     @classmethod
     def from_df_row(
-        cls, row, current_river_basin: RiverBasin
+        cls, row, current_river_basin: RiverBasin, doc_id: str
     ) -> tuple["RiverWaterLevelData", str]:
         river_basin = RiverBasin.from_df_row(row) or current_river_basin
         river = River.from_df_row(row, river_basin)
@@ -49,13 +48,13 @@ class RiverWaterLevelData:
             else 0.0
         )
 
-        now = datetime.now()
-        time_6am = now.replace(hour=6, minute=0, second=0, microsecond=0)
+        time_ut = TimeFormat("%Y-%m-%d-%H-%M").parse(doc_id[:16]).ut
+        time_str = TimeFormat("%Y-%m-%d %H:%M:%S").format(Time(time_ut))
 
         rwld = cls(
             gauging_station_name=gauging_station.name,
-            time_str=now.strftime("%Y-%m-%d 06:00:00"),
-            time_ut=int(time_6am.timestamp()),
+            time_str=time_str,
+            time_ut=time_ut,
             previous_water_level=previous_water_level,
             current_water_level=current_water_level,
             remarks=remarks,

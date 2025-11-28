@@ -23,14 +23,14 @@ class RiverWaterLevelDataTable(
         return max(rwld.time_ut for rwld in self.d_list)
 
     @classmethod
-    def from_df(cls, df) -> "RiverWaterLevelDataTable":
+    def from_df(cls, df, doc_id) -> "RiverWaterLevelDataTable":
         d_list = []
         current_river_basin = None
 
         for idx in range(2, len(df)):
             row = df.iloc[idx]
             rwld, current_river_basin = RiverWaterLevelData.from_df_row(
-                row, current_river_basin
+                row, current_river_basin, doc_id
             )
             if rwld:
                 d_list.append(rwld)
@@ -39,10 +39,12 @@ class RiverWaterLevelDataTable(
 
     @classmethod
     def from_pdf(cls, pdf_path: str) -> "RiverWaterLevelDataTable":
+        doc_id = pdf_path.split("/")[-1][:-4]
+        assert len(doc_id) == 28
         tables = camelot.read_pdf(pdf_path)
         assert len(tables) > 0, f"No tables found in PDF: {pdf_path}"
         df = tables[0].df
-        return cls.from_df(df)
+        return cls.from_df(df, doc_id)
 
     def __len__(self):
         return len(self.d_list)
