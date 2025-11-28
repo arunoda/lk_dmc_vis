@@ -89,9 +89,6 @@ class RiverWaterLevelDataTableRemoteDataMixin:
         for station_name, rwld_list in idx.items():
             rwld_list.sort(key=lambda x: x.time_ut, reverse=True)
             idx[station_name] = rwld_list[0]
-            print(station_name)
-            print(idx[station_name])
-            print("-" * 32)
 
         latest_rwld_table = cls(d_list=list(idx.values()))
 

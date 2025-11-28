@@ -7,6 +7,7 @@ from lk_dmc.RiverBasin import RiverBasin
 @dataclass
 class River(AbstractTable):
     river_basin_name: str
+    location_names: list[str]
 
     @classmethod
     def from_df_row(cls, df_row, expected_river_basin) -> "River":

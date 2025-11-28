@@ -37,6 +37,9 @@ class GaugingStation(AbstractTable):
         gs = GaugingStation.from_name(name)
         assert gs.river == expected_river, f'"{gs}" != "{expected_river}"'
         assert (
+            gs.name in gs.river.location_names
+        ), f'"{gs.name}" not in "{gs.river.location_names}"'
+        assert (
             gs.river.river_basin == expected_river_basin
         ), f'"{gs.river.river_basin}" != "{expected_river_basin}"'
         assert (
