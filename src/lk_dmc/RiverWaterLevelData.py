@@ -13,7 +13,6 @@ log = Log("RiverWaterLevelData")
 
 @dataclass
 class RiverWaterLevelData:
-    river: River
     gauging_station: GaugingStation
     time_str: str
     time_ut: int
@@ -24,7 +23,6 @@ class RiverWaterLevelData:
     rainfall_mm: float
 
     def validate(self):
-        assert self.river, "River is None"
         assert self.gauging_station, "Gauging Station is None"
         assert self.time_str, "Time string is empty"
         assert (
@@ -56,7 +54,7 @@ class RiverWaterLevelData:
         rising_falling = row[10].strip()
         rainfall = row[11].strip()
 
-        gauging_station = GaugingStation.from_df_row(row)
+        gauging_station = GaugingStation.from_df_row(row, river)
         previous_water_level = WaterLevel.from_str(row[7].strip(), unit)
         current_water_level = WaterLevel.from_str(row[8].strip(), unit)
         rainfall_mm = (
@@ -69,7 +67,6 @@ class RiverWaterLevelData:
         time_6am = now.replace(hour=6, minute=0, second=0, microsecond=0)
 
         rwld = cls(
-            river=river,
             gauging_station=gauging_station,
             time_str=now.strftime("%Y-%m-%d 06:00:00"),
             time_ut=int(time_6am.timestamp()),
@@ -85,9 +82,9 @@ class RiverWaterLevelData:
 
     def to_dict_flat(self) -> dict:
         return dict(
-            river_basin_name=self.river.river_basin.name,
-            river_basin_code=self.river.river_basin.code,
-            river_name=self.river.name,
+            river_basin_name=self.gauging_station.river.river_basin.name,
+            river_basin_code=self.gauging_station.river.river_basin.code,
+            river_name=self.gauging_station.river.name,
             gauging_station_name=self.gauging_station.name,
             alert_level_m=self.gauging_station.alert_level.m,
             minor_flood_level_m=self.gauging_station.minor_flood_level.m,
