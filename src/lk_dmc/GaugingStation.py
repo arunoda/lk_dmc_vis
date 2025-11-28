@@ -1,24 +1,28 @@
-import os
 from dataclasses import asdict, dataclass
 
-from utils import JSONFile
-
+from lk_dmc.AbstractTable import AbstractTable
 from lk_dmc.River import River
 from lk_dmc.WaterLevel import WaterLevel
 
 
 @dataclass
-class GaugingStation:
-    name: str
-    river: River
-    alert_level: WaterLevel
-    minor_flood_level: WaterLevel
-    major_flood_level: WaterLevel
+class GaugingStation(AbstractTable):
+    river_name: str
+    alert_level: float
+    minor_flood_level: float
+    major_flood_level: float
     lat_lng: tuple[float, float]
     district_id: str
 
+    @property
+    def river(self):
+
+        return River.from_name(self.river_name)
+
     @classmethod
-    def from_df_row(cls, row, e_river) -> "GaugingStation":
+    def from_df_row(
+        cls, row, expected_river, expected_river_basin
+    ) -> "GaugingStation":
         name = row[2].strip()
         if "(" in name:
             name = name.split("(")[0].strip()
@@ -32,38 +36,22 @@ class GaugingStation:
         e_major_flood_level = WaterLevel.from_str(major_flood_level, unit)
 
         gs = GaugingStation.from_name(name)
-        assert gs.river == e_river, "River mismatch"
-        assert gs.alert_level == e_alert_level, "Alert level mismatch"
+        assert gs.river == expected_river, f'"{gs}" != "{expected_river}"'
         assert (
-            gs.minor_flood_level == e_minor_flood_level
-        ), "Minor flood level mismatch"
+            gs.river.river_basin == expected_river_basin
+        ), f'"{gs.river.river_basin}" != "{expected_river_basin}"'
         assert (
-            gs.major_flood_level == e_major_flood_level
-        ), "Major flood level mismatch"
-        return gs
-
-    @classmethod
-    def __get_d_list__(cls):
-        return JSONFile(
-            os.path.join("data", "static", "gauging_stations.json")
-        ).read()
-
-    @classmethod
-    def from_dict(cls, d):
-        return cls(
-            name=d["name"],
-            river=River.from_dict(d["river"]),
-            alert_level=WaterLevel.from_dict(d["alert_level"]),
-            minor_flood_level=WaterLevel.from_dict(d["minor_flood_level"]),
-            major_flood_level=WaterLevel.from_dict(d["major_flood_level"]),
-            lat_lng=tuple(d["lat_lng"]),
-            district_id=d["district_id"],
+            gs.alert_level == e_alert_level
+        ), f'alert_level: "{gs.alert_level}" != "{e_alert_level}"'
+        assert gs.minor_flood_level == e_minor_flood_level, (
+            "minor_flood_level:"
+            + f' "{gs.minor_flood_level}" != "{e_minor_flood_level}"'
         )
-
-    @classmethod
-    def list_all(cls):
-        d_list = cls.__get_d_list__()
-        return [cls.from_dict(d) for d in d_list]
+        assert gs.major_flood_level == e_major_flood_level, (
+            "major_flood_level:"
+            + f' "{gs.major_flood_level}" != "{e_major_flood_level}"'
+        )
+        return gs
 
     @classmethod
     def from_name(cls, name):

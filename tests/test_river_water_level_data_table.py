@@ -19,23 +19,11 @@ class TestCase(unittest.TestCase):
         self.assertEqual(
             actual_d,
             {
-                "gauging_station": {
-                    "name": "Nagalagam Street",
-                    "river": {
-                        "name": "Kelani Ganga",
-                        "river_basin": {
-                            "code": "RB 01",
-                            "name": "Kelani Ganga",
-                        },
-                    },
-                    "alert_level": {"m": 1.2192},
-                    "minor_flood_level": {"m": 1.524},
-                    "major_flood_level": {"m": 2.1336},
-                },
+                "gauging_station_name": "Nagalagam Street",
                 "time_str": "2025-11-28 06:00:00",
                 "time_ut": 1764289800,
-                "previous_water_level": {"m": 1.61544},
-                "current_water_level": {"m": 1.6459200000000003},
+                "previous_water_level": 1.61544,
+                "current_water_level": 1.6459200000000003,
                 "remarks": "Minor Flood",
                 "rising_or_falling": "Rising",
                 "rainfall_mm": 0.0,

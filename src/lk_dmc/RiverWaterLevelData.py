@@ -13,38 +13,20 @@ log = Log("RiverWaterLevelData")
 
 @dataclass
 class RiverWaterLevelData:
-    gauging_station: GaugingStation
+    gauging_station_name: str
     time_str: str
     time_ut: int
-    previous_water_level: WaterLevel
-    current_water_level: WaterLevel
+    previous_water_level: float
+    current_water_level: float
     remarks: str
     rising_or_falling: str
     rainfall_mm: float
 
-    def validate(self):
-        assert self.gauging_station, "Gauging Station is None"
-        assert self.time_str, "Time string is empty"
-        assert (
-            isinstance(self.time_ut, int) and self.time_ut > 0
-        ), "Invalid time_ut"
-        assert self.previous_water_level, "Previous Water Level is None"
-        assert self.current_water_level, "Current Water Level is None"
-        assert self.remarks is not None, "Remarks is None"
-        assert self.rising_or_falling in (
-            "Rising",
-            "Falling",
-            "",
-        ), "Invalid rising_or_falling value"
-        assert (
-            isinstance(self.rainfall_mm, float) and self.rainfall_mm >= 0.0
-        ), "Invalid rainfall_mm"
-
     @classmethod
     def from_df_row(
-        cls, row, river_basin: RiverBasin | None
-    ) -> tuple["RiverWaterLevelData | None", RiverBasin | None]:
-        river_basin = RiverBasin.from_df_row(row) or river_basin
+        cls, row, current_river_basin: RiverBasin
+    ) -> tuple["RiverWaterLevelData", str]:
+        river_basin = RiverBasin.from_df_row(row) or current_river_basin
         river = River.from_df_row(row, river_basin)
         assert river, "River could not be created from row"
 
@@ -54,7 +36,7 @@ class RiverWaterLevelData:
         rising_falling = row[10].strip()
         rainfall = row[11].strip()
 
-        gauging_station = GaugingStation.from_df_row(row, river)
+        gauging_station = GaugingStation.from_df_row(row, river, river_basin)
         previous_water_level = WaterLevel.from_str(row[7].strip(), unit)
         current_water_level = WaterLevel.from_str(row[8].strip(), unit)
         rainfall_mm = (
@@ -67,7 +49,7 @@ class RiverWaterLevelData:
         time_6am = now.replace(hour=6, minute=0, second=0, microsecond=0)
 
         rwld = cls(
-            gauging_station=gauging_station,
+            gauging_station_name=gauging_station.name,
             time_str=now.strftime("%Y-%m-%d 06:00:00"),
             time_ut=int(time_6am.timestamp()),
             previous_water_level=previous_water_level,
@@ -76,24 +58,5 @@ class RiverWaterLevelData:
             rising_or_falling=rising_falling,
             rainfall_mm=rainfall_mm,
         )
-        rwld.validate()
+
         return rwld, river_basin
-
-    @classmethod
-    def from_dict(cls, d):
-        gauging_station = GaugingStation.from_dict(d["gauging_station"])
-        previous_water_level = WaterLevel.from_dict(d["previous_water_level"])
-        current_water_level = WaterLevel.from_dict(d["current_water_level"])
-
-        rwld = cls(
-            gauging_station=gauging_station,
-            time_str=d["time_str"],
-            time_ut=d["time_ut"],
-            previous_water_level=previous_water_level,
-            current_water_level=current_water_level,
-            remarks=d["remarks"],
-            rising_or_falling=d["rising_or_falling"],
-            rainfall_mm=d["rainfall_mm"],
-        )
-        rwld.validate()
-        return rwld

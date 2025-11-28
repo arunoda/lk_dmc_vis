@@ -1,37 +1,37 @@
 import re
 from dataclasses import dataclass
 
+from lk_dmc.AbstractTable import AbstractTable
+
 
 @dataclass
-class RiverBasin:
+class RiverBasin(AbstractTable):
     code: str
-    name: str
 
     @staticmethod
-    def __validate_code__(code):
-        assert code[:2] == "RB", "River Basin code must start with 'RB'"
-        int_part = int(code[3:].strip())
-        assert 1 <= int_part <= 200, "River Basin code must be between RB"
+    def __parse_name__(river_basin_str: str) -> str:
+        river_basin_str = river_basin_str.replace("\n", " ").strip()
+        parts = river_basin_str.split("(")
+        basin_name = parts[0].strip()
+        assert basin_name, "River Basin name is empty"
+        return basin_name
+
+    @staticmethod
+    def __parse_code__(river_basin_str: str) -> str:
+        parts = river_basin_str.split("(")
+        basin_code = parts[1].split(")")[0].strip()
+        basin_code = re.sub(r"\s+", " ", basin_code)
+        return basin_code
 
     @staticmethod
     def from_df_row(row) -> "RiverBasin | None":
         river_basin_str = row[0].strip()
         if not river_basin_str:
             return None
-        river_basin_str = river_basin_str.replace("\n", " ").strip()
-        parts = river_basin_str.split("(")
-        basin_name = parts[0].strip()
-        assert basin_name, "River Basin name is empty"
-        basin_code = parts[1].split(")")[0].strip()
-        basin_code = re.sub(r"\s+", " ", basin_code)
-        RiverBasin.__validate_code__(basin_code)
-        return RiverBasin(code=basin_code, name=basin_name)
+        name = RiverBasin.__parse_name__(river_basin_str)
+        code = RiverBasin.__parse_code__(river_basin_str)
 
-    @classmethod
-    def from_dict(cls, d):
-        return cls(code=d["code"], name=d["name"])
-
-    def __eq__(self, value):
-        if not isinstance(value, RiverBasin):
-            return False
-        return self.code == value.code and self.name == value.name
+        river_basin = RiverBasin.from_name(name)
+        assert river_basin.name == name, "River Basin name mismatch"
+        assert river_basin.code == code, "River Basin code mismatch"
+        return river_basin

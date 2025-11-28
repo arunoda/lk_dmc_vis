@@ -1,29 +1,22 @@
 from dataclasses import dataclass
 
+from lk_dmc.AbstractTable import AbstractTable
 from lk_dmc.RiverBasin import RiverBasin
 
 
 @dataclass
-class River:
-    name: str
-    river_basin: RiverBasin
+class River(AbstractTable):
+    river_basin_name: str
 
     @classmethod
-    def from_df_row(cls, df_row, river_basin) -> "River":
+    def from_df_row(cls, df_row, expected_river_basin) -> "River":
         river_name = df_row[1].strip() or df_row[0].split(")")[1].strip()
-        assert river_name, "River name is empty"
-        return cls(name=river_name, river_basin=river_basin)
+        river = River.from_name(river_name)
+        assert (
+            river.river_basin == expected_river_basin
+        ), f"{river.river_basin} != {expected_river_basin}"
+        return river
 
-    @classmethod
-    def from_dict(cls, d):
-        return cls(
-            name=d["name"],
-            river_basin=RiverBasin.from_dict(d["river_basin"]),
-        )
-
-    def __eq__(self, value):
-        if not isinstance(value, River):
-            return False
-        return (
-            self.name == value.name and self.river_basin == value.river_basin
-        )
+    @property
+    def river_basin(self):
+        return RiverBasin.from_name(self.river_basin_name)
